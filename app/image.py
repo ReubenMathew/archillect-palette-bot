@@ -7,9 +7,6 @@ class Palette:
 
     def __init__(self,url):
         self.url = url
-
-    def process(self):
-
         response = requests.get(self.url)
         img = Image.open(BytesIO(response.content))
 
@@ -19,17 +16,31 @@ class Palette:
         img = img.quantize(colors=16, method=0)
         img.save(f'reducedImage.png')
 
-        colors = colorgram.extract(img, 4)
-        colors.sort(key=lambda c: c.hsl.h)
+        self.colors = colorgram.extract(img, 4)
+        self.colors.sort(key=lambda c: c.hsl.h)
 
-        print(colors)
-
+    def getImages(self):
         imgList = []
         counter = 0
-        for color in colors:
+        for color in self.colors:
             counter += 1
             rgb = color.rgb
             img = Image.new('RGB', (1024,1024), rgb)
             imgList.append(img)
+        # print(imgList)
         return imgList
+
+    
+    def getRGB(self):
+        rgbList = []
+        counter = 0
+        for color in self.colors:
+            counter += 1
+            rgb = color.rgb
+            rgbList.append(rgb)
+
+        out = "RGB Codes:\n"
+        for rgb in rgbList:
+            out += f'({rgb.r},{rgb.g},{rgb.b})\n'
+        return out
 

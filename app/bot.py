@@ -20,8 +20,10 @@ import json
 import os
 import queue
 
+
 import requests
 import tweepy
+from image import Palette
 
 
 auth = tweepy.OAuthHandler(apiKey, apiSecret)
@@ -29,7 +31,7 @@ auth.set_access_token(accessToken,accessSecret)
 
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-user_id = 2907774137
+user_id = 2907774137 # @archillect user id
 
 class ResponseTweet:
     def __init__(self, text, in_response):
@@ -39,10 +41,23 @@ class ResponseTweet:
 class TweetStreamListener(tweepy.StreamListener):
     def on_status(self, status):
         if (status.user.id == user_id) and 'media' in status.entities and not hasattr(status, 'retweeted_status'):
-            image = status.entities['media'][0]['media_url']
-            print(image, status.id)
-            # api.update_status("Color Palette", in_reply_to_status_id=status.id,media_ids=[image])
+            imageUrl = status.entities['media'][0]['media_url']
 
+            palette = Palette(imageUrl)
+            images = palette.getImages()
+            text = palette.getRGB()
+            print(text, status.id)
+            counter = 1
+            for image in images: 
+                filename = f'color-{counter}'
+                image.save(filename)
+                print(api.media_upload(filename))
+                os.remove(filename)
+            
+            # api.update_with_media(text, in_reply_to_status_id=status.id,media_ids=[images])
+
+print("Starting Twitter Bot...")
+print("Bot intialized!")
 tweetStreamListener = TweetStreamListener()
 myStream = tweepy.Stream(auth=api.auth, listener=tweetStreamListener)
 myStream.filter(follow=[str(user_id)])
