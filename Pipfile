@@ -26,6 +26,8 @@ PySocks = "==1.7.1"
 Werkzeug = "==1.0.1"
 python-dotenv = "*"
 os = "*"
+scikit-image = "*"
+numpy = "*"
 
 [requires]
 python_version = "3.6"

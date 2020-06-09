@@ -40,7 +40,9 @@ class TweetStreamListener(tweepy.StreamListener):
     def on_status(self, status):
         if (status.user.id == user_id) and 'media' in status.entities and not hasattr(status, 'retweeted_status'):
             image = status.entities['media'][0]['media_url']
-            print(image)
+            print(image, status.id)
+            # api.update_status("Color Palette", in_reply_to_status_id=status.id,media_ids=[image])
 
 tweetStreamListener = TweetStreamListener()
 myStream = tweepy.Stream(auth=api.auth, listener=tweetStreamListener)
+myStream.filter(follow=[str(user_id)])
