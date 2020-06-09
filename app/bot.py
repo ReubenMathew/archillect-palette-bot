@@ -48,13 +48,14 @@ class TweetStreamListener(tweepy.StreamListener):
             text = palette.getRGB()
             print(text, status.id)
             counter = 1
+
+            mediaList = []
             for image in images: 
-                filename = f'color-{counter}'
+                filename = f'color-{counter}.png'
                 image.save(filename)
-                print(api.media_upload(filename))
+                mediaList.append(api.media_upload(filename).media_id)
                 os.remove(filename)
-            
-            # api.update_with_media(text, in_reply_to_status_id=status.id,media_ids=[images])
+            api.update_status(text,media_ids=mediaList)
 
 print("Starting Twitter Bot...")
 print("Bot intialized!")

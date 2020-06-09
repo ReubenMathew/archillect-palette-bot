@@ -14,7 +14,7 @@ class Palette:
         img = img.enhance(2.8)
 
         img = img.quantize(colors=16, method=0)
-        img.save(f'reducedImage.png')
+        # img.save(f'reducedImage.png')
 
         self.colors = colorgram.extract(img, 4)
         self.colors.sort(key=lambda c: c.hsl.h)
@@ -39,7 +39,7 @@ class Palette:
             rgb = color.rgb
             rgbList.append(rgb)
 
-        out = "RGB Codes:\n"
+        out = "Random Color Palette:\n"
         for rgb in rgbList:
             out += f'({rgb.r},{rgb.g},{rgb.b})\n'
         return out
